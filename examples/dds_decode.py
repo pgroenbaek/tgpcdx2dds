@@ -274,42 +274,11 @@ def write_dds(mips, output_path):
     print(f"DDS format: {dds_type}")
     print(f"Mip levels: {len(mips)}")
     print(f"Output: {output_path}")
-
-# ---------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------
-
-def main():
-    parser = argparse.ArgumentParser(
-        description="Convert RailWorks compressed texture XML to DDS."
-    )
-
-    parser.add_argument(
-        "xml",
-        type=Path,
-        help="Path to the RailWorks texture XML file."
-    )
-
-    parser.add_argument(
-        "--mip-width",
-        type=int,
-        default=None,
-        help="Export only the mip with this width. Defaults to all mip levels."
-    )
-
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=None,
-        help="Output directory. Defaults to the XML file's directory."
-    )
-
-    args = parser.parse_args()
-
-    xml_path = args.xml.resolve()
-
-    if not xml_path.is_file():
-        raise FileNotFoundError(xml_path)
+def convert_file(xml_path, output_dir=None, mip_width=None):
+    print()
+    print("=" * 70)
+    print(f"Converting: {xml_path}")
+    print("=" * 70)
 
     mips = parse_texture_xml(xml_path)
 
@@ -321,21 +290,17 @@ def main():
             f"{mip['format']}"
         )
 
-    if args.mip_width is not None:
+    if mip_width is not None:
         mips = [
             mip for mip in mips
-            if mip["width"] == args.mip_width
+            if mip["width"] == mip_width
         ]
 
         if not mips:
-            raise ValueError(
-                f"No mip with width {args.mip_width} found."
-            )
+            raise ValueError(f"No mip with width {mip_width} found.")
 
-        # A single-level DDS.
         mips = [mips[0]]
 
-    # Remove the complete .TgPcDx.xml suffix.
     filename = xml_path.name
     suffix = ".TgPcDx.xml"
 
@@ -344,15 +309,93 @@ def main():
     else:
         texture_name = xml_path.stem
 
-    output_dir = (
-        args.output.resolve()
-        if args.output is not None
-        else xml_path.parent
-    )
+    if output_dir is None:
+        destination = xml_path.parent
+    else:
+        destination = output_dir
 
-    output_path = output_dir / f"{texture_name}.dds"
+    output_path = destination / f"{texture_name}.dds"
 
     write_dds(mips, output_path)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Convert RailWorks compressed texture XML files to DDS."
+    )
+
+    parser.add_argument(
+        "input",
+        type=Path,
+        help="Path to a .TgPcDx.xml file or a folder containing them."
+    )
+
+    parser.add_argument(
+        "--mip-width",
+        type=int,
+        default=None,
+        help="Export only the mip with this width."
+    )
+
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="Output directory. Defaults to the source file/folder."
+    )
+
+    args = parser.parse_args()
+
+    input_path = args.input.resolve()
+
+    if not input_path.exists():
+        raise FileNotFoundError(input_path)
+
+    if input_path.is_file():
+        if not input_path.name.lower().endswith(".tgpcdx.xml"):
+            raise ValueError("Input file must end in .TgPcDx.xml")
+
+        files = [input_path]
+
+    elif input_path.is_dir():
+        files = sorted(
+            path for path in input_path.rglob("*")
+            if path.is_file()
+            and path.name.lower().endswith(".tgpcdx.xml")
+        )
+
+    else:
+        raise ValueError(f"Invalid input: {input_path}")
+
+    if not files:
+        print("No .TgPcDx.xml files found.")
+        return
+
+    print(f"Found {len(files)} texture file(s).")
+
+    successful = 0
+    failed = 0
+
+    for xml_path in files:
+        try:
+            convert_file(
+                xml_path,
+                output_dir=args.output.resolve() if args.output else None,
+                mip_width=args.mip_width
+            )
+            successful += 1
+
+        except Exception as error:
+            failed += 1
+            print(f"\nERROR converting {xml_path}: {error}")
+
+    print()
+    print("=" * 70)
+    print("CONVERSION SUMMARY")
+    print("=" * 70)
+    print(f"Successful: {successful}")
+    print(f"Failed:     {failed}")
+    print(f"Total:      {len(files)}")
 
 
 if __name__ == "__main__":
