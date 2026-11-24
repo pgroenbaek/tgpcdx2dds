@@ -93,9 +93,9 @@ done
 python3 -m tgpcdx2dds inputfile.TgPcDx.xml
 ```
 
-Note that a directory can be supplied to the CLI and Python module instead an input file like `inputfile.TgPcDx.xml`.
+Note that a directory can be supplied to the CLI and Python module instead an input file.
 
-In that case, all files with the `TgPcDx.xml` extension in the folder and its subfolders will be converted to `.dds`.
+In that case, all files with the `.TgPcDx.xml` extension present in the folder and its subfolders will be converted to `.dds`.
 
 ### Using the module in Python scripts
 
