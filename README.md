@@ -107,10 +107,14 @@ input_path: Path = Path("path/to/inputfile.TgPcDx.xml")
 
 convert_tgpcdx_xml_to_dds(
     input_path,
-    output_dir=None,
-    mip_width=None
+    output_dir=None, # Supply a dir if you want a different output folder
+    mip_width=None # Supply a number like 256, 512, 1024, etc, if you only want a specific mip level.
 )
 ```
+
+Comparable parameters to `output_dir` and `mip_width` also exist on the CLI.
+
+Use the `--output` and `--mip-width` parameters there.
 
 ## Building
 
