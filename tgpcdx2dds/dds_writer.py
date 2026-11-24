@@ -128,22 +128,21 @@ def write_dds(mip_levels, output_path):
         f.write(header)
 
         for index, mip_level in enumerate(mip_levels):
-            if mip_format == "HC_IMAGE_FORMAT_COMPRESSED_INTERP_ALPHA":
+            if mip_format == "HC_IMAGE_FORMAT_COMPRESSED":
+                # Preserve original data blocks.
+                mip_data = mip_level["data"]
+            else:
                 # Extract the BC1 colour block from each 16-byte block.
-                # TODO: Actually figure out how the alpha channel works with INTERP_ALPHA
+                # TODO: Actually figure out how the alpha channel works with INTERP_ALPHA and EXPL_ALPHA
                 #       This is a bit of a temporary workaround. Its got something more than just alpha, so
                 #       using the alpha channel as alpha directly makes the texture look completely wrong.
-                #       Until then we just ignore the alpha channel for HC_IMAGE_FORMAT_COMPRESSED_INTERP_ALPHA.
+                #       Until then we just ignore the alpha channel for INTERP_ALPHA and EXPL_ALPHA.
                 block_count = len(mip_level["data"]) // 16
 
                 mip_data = b"".join(
                     mip_level["data"][i * 16 + color_offset:i * 16 + color_offset + 8]
                     for i in range(block_count)
                 )
-
-            else:
-                # Preserve original DXT1 or DXT3 blocks.
-                mip_data = mip_level["data"]
 
             f.write(mip_data)
 

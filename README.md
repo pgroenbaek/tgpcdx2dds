@@ -6,6 +6,9 @@
 
 A cross-platform CLI and Python module for batch converting TgPcDx textures to DDS.
 
+> [!NOTE]
+> Handling of alpha channels is not implemented properly yet. Don't expect it to work as of yet.
+
 ## Installation
 
 The CLI or Python module can be installed in the following ways:

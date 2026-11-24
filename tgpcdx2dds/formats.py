@@ -35,7 +35,7 @@ FORMATS = {
     },
     "HC_IMAGE_FORMAT_COMPRESSED_EXPL_ALPHA": {
         "block_size": 16,
-        "dds_type": "DXT3",
-        "color_offset": 0,
+        "dds_type": "DXT1",
+        "color_offset": 8,
     },
 }
