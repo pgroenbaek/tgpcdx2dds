@@ -103,10 +103,7 @@ def write_dds(mip_levels, output_path):
 
     for mip_level in mip_levels:
         if mip_level["format"] != mip_format:
-            raise ValueError(
-                "Mip levels use different formats. "
-                "They cannot be combined into one DDS mip chain."
-            )
+            raise ValueError("Mip levels use different formats. They cannot be combined into one DDS mip chain.")
 
     format_info = FORMATS[mip_format]
     dds_type = format_info["dds_type"]
@@ -134,9 +131,9 @@ def write_dds(mip_levels, output_path):
             if mip_format == "HC_IMAGE_FORMAT_COMPRESSED_INTERP_ALPHA":
                 # Extract the BC1 colour block from each 16-byte block.
                 # TODO: Actually figure out how the alpha channel works with INTERP_ALPHA
-                #       This is a bit of a temporary workaround. Its got something more than just alpha so
+                #       This is a bit of a temporary workaround. Its got something more than just alpha, so
                 #       using the alpha channel as alpha directly makes the texture look completely wrong.
-                #       Until then we just ignore the alpha channel with HC_IMAGE_FORMAT_COMPRESSED_INTERP_ALPHA.
+                #       Until then we just ignore the alpha channel for HC_IMAGE_FORMAT_COMPRESSED_INTERP_ALPHA.
                 block_count = len(mip_level["data"]) // 16
 
                 mip_data = b"".join(
