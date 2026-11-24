@@ -75,6 +75,8 @@ done
 
 ### Running the CLI
 
+Here's how to run the CLI. Note that a directory can be supplied instead an input file like `inputfile.TgPcDx.xml`, in which case all files with the `TgPcDx.xml` extension in the folder and its subfolders will be converted to `.dds`.
+
 #### Windows
 
 ```ps1
