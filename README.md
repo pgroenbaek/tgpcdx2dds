@@ -75,8 +75,6 @@ done
 
 ### Running the CLI
 
-Here's how to run the CLI. Note that a directory can be supplied instead an input file like `inputfile.TgPcDx.xml`, in which case all files with the `TgPcDx.xml` extension in the folder and its subfolders will be converted to `.dds`.
-
 #### Windows
 
 ```ps1
@@ -94,6 +92,10 @@ Here's how to run the CLI. Note that a directory can be supplied instead an inpu
 ```bash
 python3 -m tgpcdx2dds inputfile.TgPcDx.xml
 ```
+
+Note that a directory can be supplied to the CLI and Python module instead an input file like `inputfile.TgPcDx.xml`.
+
+In that case, all files with the `TgPcDx.xml` extension in the folder and its subfolders will be converted to `.dds`.
 
 ### Using the module in Python scripts
 
