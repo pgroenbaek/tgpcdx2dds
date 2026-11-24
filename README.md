@@ -45,10 +45,10 @@ pip install --upgrade ./tgpcdx2dds
 
 This CLI / Python module does not read `.TgPcDx` files directly. First unpack them to `.TgPcDx.xml` using the `serz.exe` program included with Railworks and TS Classic.
 
-#### On Windows
+#### Unpacking on Windows
 On windows, the use the following command in PowerShell to convert all files in a directory and its sub directories.
 
-Replace paths to the Railworks / TS Classic directory and the asset directory.
+Replace paths to the `serz.exe` file and the asset directory.
 
 ```ps1
 $Serz="D:\Path\To\serz.exe";
@@ -57,8 +57,10 @@ $AssetRoot="D:\Path\To\Asset";
 gci $AssetRoot -Recurse -File -Include *.TgPcDx | % { & $Serz $_.FullName "/xml:$($_.FullName).xml" }
 ```
 
-#### On Linux via `wine`
-On Linux, use the following bash script to convert them in all subfolders recursively:
+#### Unpacking on Linux via `wine`
+On Linux, use the following bash script to achieve the same.
+
+Wine is required to be installed on the system in order to do this on Linux.
 
 ```bash
 SERZ="/path/to/serz.exe"
@@ -70,7 +72,6 @@ while IFS= read -r -d '' file; do
     wine "$SERZ" "$winfile" "/xml:${winfile}.xml"
 done
 ```
-
 
 ### Running the CLI
 
@@ -95,7 +96,16 @@ python3 -m tgpcdx2dds inputfile.TgPcDx.xml
 ### Using the module in Python scripts
 
 ```python
+from pathlib import Path
+from tgpcdx2dds import convert_tgpcdx_xml_to_dds
 
+input_path: Path = Path("path/to/inputfile.TgPcDx.xml")
+
+convert_tgpcdx_xml_to_dds(
+    input_path,
+    output_dir=None,
+    mip_width=None
+)
 ```
 
 ## Building
